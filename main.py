@@ -1,19 +1,33 @@
+import sys
 import tkinter as tk
 from tkinter import PhotoImage
+import os
+
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 # Create a new Tkinter window
 root = tk.Tk()
 root.title("Beast From Beyond Symbols Solver")
-root.iconbitmap('Beast Symbols/logo.ico')
+root.iconbitmap(resource_path('logo.ico'))
 
 # Create a list to store the selected buttons
 selected_buttons = []
+
 
 def on_button_click(button_id):
     # Add the button's ID to the list of selected buttons
     selected_buttons.append(button_id)
     # Update the window to show the selected buttons
     update_window()
+
 
 def reset_program():
     global selected_buttons
@@ -22,6 +36,7 @@ def reset_program():
         button = tk.Button(root)
         button.config(state="normal")
     update_window()
+
 
 def update_window():
     # Clear the window
@@ -34,8 +49,8 @@ def update_window():
     # Create a grid of buttons
     for i in range(12):
         button = tk.Button(root)
-        button.grid(row=i//4, column=i%4, padx=0, pady=0)
-        img = PhotoImage(file=f"Beast Symbols/picture {i}.png")
+        button.grid(row=i // 4, column=i % 4, padx=0, pady=0)
+        img = PhotoImage(file=resource_path(f"picture {i}.png"))
         button.config(image=img)
         if len(selected_buttons) < 4:
             button.config(command=lambda id=i: on_button_click(id))
@@ -57,7 +72,7 @@ def update_window():
             result = process_buttons(selected_buttons)
             if result:
                 for j, idx in enumerate(result):
-                    img = PhotoImage(file=f"Beast Symbols/picture {idx}.png")
+                    img = PhotoImage(file=resource_path(f"picture {idx}.png"))
                     label = tk.Label(root, image=img)
                     label.grid(row=5, column=j)
                     label.image = img
@@ -74,7 +89,6 @@ def update_window():
     reset_button.grid(row=6, column=0, columnspan=4)
 
 
-
 def process_buttons(numbers):
     lines = [[1, 2, 3, 4, 0, 5], [6, 5, 8, 9, 7, 1], [9, 10, 7, 8, 6, 1], [9, 4, 3, 0, 5, 2], [1, 11, 3, 2, 0, 5], [4, 11, 0, 2, 5, 8]]
     for line in lines:
@@ -82,6 +96,7 @@ def process_buttons(numbers):
             ordered_numbers = [x for x in line if x in numbers]
             return ordered_numbers
     return False
+
 
 update_window()
 
